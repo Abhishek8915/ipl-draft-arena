@@ -117,7 +117,8 @@ const roster: Record<FranchiseId, readonly RosterEntry[]> = {
 
 const existingIds: Record<string, string> = {
   "Ruturaj Gaikwad": "csk-ruturaj", "MS Dhoni": "csk-ms-dhoni", "Shivam Dube": "csk-shivam",
-  "Noor Ahmad": "csk-noor", "Axar Patel": "dc-axar", "KL Rahul": "dc-kl",
+  "Ravindra Jadeja": "csk-ravindra", "Matheesha Pathirana": "csk-matheesha",
+  "Rahul Tripathi": "csk-rahul", "Noor Ahmad": "csk-noor", "Axar Patel": "dc-axar", "KL Rahul": "dc-kl",
   "Tristan Stubbs": "dc-tristan", "Abishek Porel": "dc-abishek", "Vipraj Nigam": "dc-vipraj",
   "Nitish Rana": "dc-nitish", "Mitchell Starc": "dc-mitchell", "Mukesh Kumar": "dc-mukesh",
   "Kuldeep Yadav": "dc-kuldeep", "Shubman Gill": "gt-shubman", "Rashid Khan": "gt-rashid",
@@ -137,14 +138,15 @@ const existingIds: Record<string, string> = {
   "Yuzvendra Chahal": "pbks-yuzvendra", "Marco Jansen": "pbks-marco",
   "Prabhsimran Singh": "pbks-prabhsimran", "Nehal Wadhera": "pbks-nehal",
   "Shashank Singh": "pbks-shashank", "Lockie Ferguson": "pbks-lockie", "Harpreet Brar": "pbks-harpreet",
-  "Sanju Samson": "rr-sanju", "Yashasvi Jaiswal": "rr-yashasvi", "Riyan Parag": "rr-riyan",
+  "Sanju Samson": "rr-sanju", "Yashasvi Jaiswal": "rr-yashasvi", "Riyan Parag": "rr-riyan", "Dhruv Jurel": "rr-dhruv",
   "Jofra Archer": "rr-jofra", "Sandeep Sharma": "rr-sandeep", "Shimron Hetmyer": "rr-shimron",
   "Rajat Patidar": "rcb-rajat", "Virat Kohli": "rcb-virat", "Phil Salt": "rcb-phil",
   "Jitesh Sharma": "rcb-jitesh", "Krunal Pandya": "rcb-krunal", "Tim David": "rcb-tim",
   "Romario Shepherd": "rcb-romario", "Josh Hazlewood": "rcb-josh", "Bhuvneshwar Kumar": "rcb-bhuvi",
   "Suyash Sharma": "rcb-suyash", "Pat Cummins": "srh-pat", "Travis Head": "srh-travis",
   "Abhishek Sharma": "srh-abhishek", "Heinrich Klaasen": "srh-heinrich",
-  "Ishan Kishan": "srh-isha", "Nitish Kumar Reddy": "srh-nitish-k", "Harshal Patel": "srh-harshal"
+  "Ishan Kishan": "srh-isha", "Nitish Kumar Reddy": "srh-nitish-k", "Harshal Patel": "srh-harshal",
+  "Mohammed Shami": "srh-mohammed-s"
 };
 
 function stableId(name: string, franchiseId: FranchiseId): string {

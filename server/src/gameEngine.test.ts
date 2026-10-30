@@ -65,6 +65,9 @@ test("October 2026 roster contains 25 unique players per franchise and confirmed
   assert.equal(IPL_PLAYERS.find((player) => player.name === "Kuldeep Yadav")?.franchiseId, "LSG");
   assert.equal(IPL_PLAYERS.find((player) => player.name === "T. Natarajan")?.franchiseId, "SRH");
   assert.equal(IPL_PLAYERS.find((player) => player.name === "Zeeshan Ansari")?.franchiseId, "DC");
+  assert.equal(IPL_PLAYERS.find((player) => player.name === "Rishabh Pant")?.id, "lsg-rishabh");
+  assert.equal(IPL_PLAYERS.find((player) => player.name === "Kuldeep Yadav")?.id, "dc-kuldeep");
+  assert.equal(IPL_PLAYERS.find((player) => player.name === "Ravindra Jadeja")?.id, "csk-ravindra");
 });
 
 test("wheel spins are guarded and depleted franchises can be retried", () => {
