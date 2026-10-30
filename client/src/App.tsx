@@ -138,10 +138,9 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [notice]);
 
-  const activeRound = room && room.players.length ? Math.floor(room.currentPickNumber / room.players.length) : 0;
   const activePosition = room && room.players.length ? room.currentPickNumber % room.players.length : 0;
   const activeTurnId = room?.turnOrder.length
-    ? room.turnOrder[activeRound % 2 === 0 ? activePosition : room.players.length - 1 - activePosition]
+    ? room.turnOrder[activePosition]
     : undefined;
   const activePlayer = room?.players.find((player) => player.id === activeTurnId);
   const isHost = room?.hostPlayerId === playerId;
@@ -287,7 +286,7 @@ export default function App() {
               {isHost ? <button className="button button--primary button--wide lobby-start" disabled={room.players.length < 2 || room.players.length > 8 || busy || room.players.some((player) => !player.connected)} onClick={() => void startDraft()}>{room.players.length < 2 ? "Waiting for one more player" : "Lock lobby & start draft"} <span>→</span></button>
                 : <div className="waiting-message"><span className="pulse-dot" /> Waiting for {room.players.find((player) => player.id === room.hostPlayerId)?.name ?? "the host"} to start the draft...</div>}
             </div>
-            <aside className="panel lobby-aside"><div className="mini-wheel">🏏</div><p className="eyebrow eyebrow--gold">GAME NIGHT RULES</p><h3>One pick at a time.<br />No take-backs.</h3><ul><li>Every squad gets 11 starters + an Impact Player.</li><li>The draft snakes back and forth each round.</li><li>Save your best move for the trade window.</li></ul><div className="aside-note">Need a second player to get rolling.</div></aside>
+            <aside className="panel lobby-aside"><div className="mini-wheel">🏏</div><p className="eyebrow eyebrow--gold">GAME NIGHT RULES</p><h3>One pick at a time.<br />No take-backs.</h3><ul><li>Every squad gets 11 starters + an Impact Player.</li><li>Turn order repeats after every round.</li><li>Save your best move for the trade window.</li></ul><div className="aside-note">Need a second player to get rolling.</div></aside>
           </section>
         )}
 

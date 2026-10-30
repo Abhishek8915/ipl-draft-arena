@@ -49,7 +49,7 @@ The development server watches server files with `tsx`. The client is built into
 
 1. A host creates a room with a display name and shares the six-digit room code.
 2. Friends join with the code and unique display names. Rooms support 2–8 participants.
-3. The host starts the draft. The lobby locks, the server randomizes the turn order, and picks snake forward/reverse each round.
+3. The host starts the draft. The lobby locks, the server randomizes the turn order, and picks continue in strict cyclic order, returning to the first player after the last.
 4. On every pick, the active participant spins the server-selected franchise wheel and chooses an available player from that franchise. A confirmation is required before a pick is committed. A depleted franchise can be re-spun without consuming the pick.
 5. Each participant drafts 11 main players and one automatically assigned Impact Player.
 6. The host opens the trade window. There can be only one pending offer at a time; accepted offers swap ownership atomically. Use the up/down controls or drag a row to change your own batting order.
@@ -166,7 +166,7 @@ Run `npm run dev` and use separate browser profiles/devices. Verify:
 
 ### Draft
 
-- [ ] Confirm the randomized order is shared and snakes each round.
+- [ ] Confirm the randomized order is shared and cycles in the same order across multiple rounds for 2–8 players.
 - [ ] Confirm only the active participant can spin and all clients see the same server-selected franchise.
 - [ ] Confirm a pick must match the selected franchise and requires confirmation.
 - [ ] Confirm picks immediately become unavailable to everyone and cannot be duplicated.

@@ -66,9 +66,7 @@ export function getPlayer(room: GameRoom, playerId: string): RoomPlayer {
 export function activePlayerId(room: GameRoom): string | undefined {
   if (!room.turnOrder.length || room.currentPickNumber >= room.totalPicks) return undefined;
   const count = room.turnOrder.length;
-  const round = Math.floor(room.currentPickNumber / count);
-  const position = room.currentPickNumber % count;
-  return room.turnOrder[round % 2 === 0 ? position : count - 1 - position];
+  return room.turnOrder[room.currentPickNumber % count];
 }
 
 export function startDraft(room: GameRoom, playerId: string): void {

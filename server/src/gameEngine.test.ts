@@ -25,7 +25,30 @@ test("room names, codes, capacity, and live join constraints are enforced", () =
   assert.throws(() => joinRoom(room.code, "Late"), /already in progress/);
 });
 
-test("eight-player snake draft creates 96 unique picks and exact squad sizes", () => {
+test("strict cyclic turn order covers every player count across multiple rounds", () => {
+  for (let playerCount = 2; playerCount <= 8; playerCount += 1) {
+    const { room, playerId: hostId } = createRoom("Host");
+    for (let index = 1; index < playerCount; index += 1) joinRoom(room.code, `Player ${index}`);
+    startDraft(room, hostId);
+    room.turnOrder = room.players.map((player) => player.id);
+
+    for (let pick = 0; pick < playerCount * 3; pick += 1) {
+      const expectedPlayerId = room.turnOrder[pick % playerCount];
+      assert.equal(activePlayerId(room), expectedPlayerId, `${playerCount} players, pick ${pick + 1}`);
+      const nextPlayer = IPL_PLAYERS.find((player) => !room.pickedPlayerIds.includes(player.id))!;
+      room.currentSpinFranchiseId = nextPlayer.franchiseId;
+      room.spinResultAt = Date.now();
+      pickPlayer(room, expectedPlayerId, nextPlayer.id);
+      assert.equal(room.currentPickNumber, pick + 1, "a successful pick advances the counter exactly once");
+      assert.equal(activePlayerId(room), room.turnOrder[(pick + 1) % playerCount]);
+    }
+
+    assert.equal(room.currentPickNumber, playerCount * 3);
+    assert.equal(room.phase, "draft");
+  }
+});
+
+test("eight-player draft creates 96 unique picks and exact squad sizes", () => {
   assert.equal(IPL_PLAYERS.length, 250);
   assert.equal(new Set(IPL_PLAYERS.map((player) => player.id)).size, IPL_PLAYERS.length);
   const { room, playerId } = createRoom("Host");
@@ -78,8 +101,13 @@ test("wheel spins are guarded and depleted franchises can be retried", () => {
   const franchiseId = spin(room, currentPlayer);
   assert.equal(room.currentSpinFranchiseId, franchiseId);
   assert.equal(room.spinInProgress, true);
+  assert.equal(room.currentPickNumber, 0, "spinning does not advance the turn");
   assert.throws(() => spin(room, currentPlayer), /already spinning/);
   finishSpin(room);
+  assert.equal(room.currentPickNumber, 0, "finishing the spin animation does not advance the turn");
+  const invalidPlayer = IPL_PLAYERS.find((player) => player.franchiseId !== franchiseId)!;
+  assert.throws(() => pickPlayer(room, currentPlayer, invalidPlayer.id), /selected by the wheel/);
+  assert.equal(room.currentPickNumber, 0, "a rejected pick does not advance the turn");
   room.pickedPlayerIds = IPL_PLAYERS.filter((player) => player.franchiseId === franchiseId).map((player) => player.id);
   spinAgain(room, currentPlayer);
   assert.equal(room.currentSpinFranchiseId, undefined);
