@@ -18,7 +18,7 @@ export async function evaluateRoom(room: GameRoom): Promise<EvaluationResult> {
         model: MODEL,
         contents: prompt,
         config: { responseMimeType: "application/json" }
-      }), 12_000);
+      }), 45_000);
       const text = generated.text;
       if (!text) throw new Error("Gemini returned an empty response.");
       try {
