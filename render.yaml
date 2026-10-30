@@ -2,7 +2,7 @@ services:
   - type: web
     name: ipl-draft-arena-server
     runtime: node
-    plan: starter
+    plan: free
     region: ohio
     buildCommand: npm ci && npm run build:server
     startCommand: npm start
