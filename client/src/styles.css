@@ -163,18 +163,15 @@ select { cursor: pointer; }
 .empty-franchise .button { margin-top: 6px; }
 .pool-panel { padding: 20px; }
 .pool-count { color: var(--green); background: rgba(99, 215, 161, .08); }
-.pool-filters { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(135px, .75fr); gap: 9px; margin: 15px 0 10px; }
-.pool-filters input, .pool-filters select { min-height: 40px; font-size: 11px; }
-.filter-reminder { margin: 9px 0; color: #d4c195; font-size: 10px; }
+.pool-filters { display: grid; grid-template-columns: minmax(0, 1fr); gap: 9px; margin: 15px 0 10px; }
+.pool-filters input { min-height: 40px; font-size: 11px; }
 .pool-list { max-height: 360px; overflow: auto; overscroll-behavior: contain; }
 .pool-row { display: flex; min-height: 49px; align-items: center; gap: 9px; padding: 5px 4px; border-bottom: 1px solid rgba(155, 175, 201, .08); }
 .pool-row--eligible { border-left: 2px solid var(--gold); background: rgba(255, 196, 86, .035); }
-.pool-row--picked { opacity: .64; }
 .pool-player-info { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
 .pool-player-info strong { overflow: hidden; color: #e5ecf4; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .pool-player-info small { color: #77889c; font-size: 9px; text-transform: capitalize; }
 .availability { flex: 0 0 auto; color: #82c9a6; font-size: 9px; }
-.availability--picked { max-width: 120px; color: #bd8f88; text-align: right; }
 .draft-order-panel, .recent-panel { padding: 17px; }
 .draft-order-list { display: grid; gap: 5px; margin-top: 12px; }
 .draft-order-row { display: flex; min-height: 36px; align-items: center; gap: 9px; padding: 0 9px; border: 1px solid transparent; border-radius: 8px; color: #a5b3c3; }
@@ -388,7 +385,6 @@ select { cursor: pointer; }
   .wheel-label { transform: translate(-50%, -50%) rotate(var(--wheel-angle)) translateY(-85px); }
   .pool-panel { padding: 15px 12px; }
   .pool-filters { grid-template-columns: 1fr; }
-  .availability--picked { max-width: 86px; font-size: 8px; }
   .draft-side { grid-template-columns: 1fr; }
   .lobby-panel { padding: 18px; }
   .trade-layout { gap: 20px; }

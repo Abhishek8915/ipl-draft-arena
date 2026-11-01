@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FRANCHISES, type FranchiseId } from "../../../shared/types";
+import { wheelLabelAngle, wheelSpinRotation } from "../lib/wheelGeometry";
 
 export default function Wheel({ selected, spinning }: { selected?: FranchiseId; spinning: boolean }) {
   const [rotation, setRotation] = useState(0);
@@ -8,7 +9,7 @@ export default function Wheel({ selected, spinning }: { selected?: FranchiseId; 
   useEffect(() => {
     if (!selected || !spinning || lastResult.current === selected) return;
     const index = FRANCHISES.findIndex((franchise) => franchise.id === selected);
-    setRotation((current) => current + 1_440 + (342 - index * 36));
+    setRotation((current) => current + wheelSpinRotation(index, current));
     lastResult.current = selected;
   }, [selected, spinning]);
 
@@ -22,7 +23,7 @@ export default function Wheel({ selected, spinning }: { selected?: FranchiseId; 
       <div className="wheel" style={{ transform: `rotate(${rotation}deg)` }}>
         <div className="wheel-disc">
           {FRANCHISES.map((team, index) => (
-            <div className="wheel-label" key={team.id} style={{ "--wheel-angle": `${index * 36}deg`, "--team-color": team.color } as React.CSSProperties}>
+            <div className="wheel-label" key={team.id} style={{ "--wheel-angle": `${wheelLabelAngle(index)}deg`, "--team-color": team.color } as React.CSSProperties}>
               <span>{team.id}</span>
             </div>
           ))}

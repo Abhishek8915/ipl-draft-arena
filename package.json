@@ -14,7 +14,7 @@
     "typecheck": "tsc -b",
     "build": "npm run typecheck && npm run build:client && npm run build:server",
     "start": "node server/dist/server/src/index.js",
-    "test": "tsx --test server/src/gameEngine.test.ts"
+    "test": "tsx --test server/src/gameEngine.test.ts client/src/lib/draftUx.test.ts"
   },
   "dependencies": {
     "@google/genai": "^1.11.0",

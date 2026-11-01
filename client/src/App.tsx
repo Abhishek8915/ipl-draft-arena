@@ -5,6 +5,7 @@ import { IPL_PLAYERS } from "../../shared/iplPlayers";
 import { FranchiseBadge } from "./components/FranchiseBadge";
 import SquadCard from "./components/SquadCard";
 import Wheel from "./components/Wheel";
+import { getEligibleDraftPlayers } from "./lib/draftPool";
 import { socket } from "./lib/socket";
 
 type ModalState = { kind: "pick"; playerId: string } | { kind: "none" };
@@ -52,7 +53,6 @@ export default function App() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [search, setSearch] = useState("");
-  const [franchiseFilter, setFranchiseFilter] = useState("all");
   const [modal, setModal] = useState<ModalState>({ kind: "none" });
   const [offeredId, setOfferedId] = useState("");
   const [targetId, setTargetId] = useState("");
@@ -149,11 +149,10 @@ export default function App() {
   const availableForSpin = room?.currentSpinFranchiseId
     ? IPL_PLAYERS.filter((player) => player.franchiseId === room.currentSpinFranchiseId && !room.pickedPlayerIds.includes(player.id))
     : [];
-  const displayedPool = useMemo(() => IPL_PLAYERS.filter((player) => {
-    const matchesText = player.name.toLocaleLowerCase().includes(search.toLocaleLowerCase());
-    const matchesTeam = franchiseFilter === "all" || player.franchiseId === franchiseFilter;
-    return matchesText && matchesTeam;
-  }), [search, franchiseFilter]);
+  const displayedPool = useMemo(() => {
+    if (!room || room.phase !== "draft" || room.spinInProgress) return [];
+    return getEligibleDraftPlayers(IPL_PLAYERS, room.pickedPlayerIds, room.currentSpinFranchiseId, search);
+  }, [room?.phase, room?.spinInProgress, room?.currentSpinFranchiseId, room?.pickedPlayerIds, search]);
 
   async function createOrJoin(event: React.FormEvent) {
     event.preventDefault();
@@ -309,21 +308,20 @@ export default function App() {
                   {room.currentSpinFranchiseId && !room.spinInProgress && availableForSpin.length === 0 && <div className="empty-franchise"><strong>No players left from this franchise.</strong><span>This pick doesn't count. Spin again to find your next star.</span>{isMyTurn && <button className="button button--secondary" disabled={busy} onClick={() => void action("draft:spin-again")}>Spin again</button>}</div>}
                 </div>
                 <div className="panel pool-panel">
-                  <div className="panel-heading"><div><p className="eyebrow">THE PLAYER POOL</p><h2>Find your next pick</h2></div><span className="pool-count">{IPL_PLAYERS.length - room.pickedPlayerIds.length} available</span></div>
-                  <div className="pool-filters"><input aria-label="Search players" placeholder="Search players..." value={search} onChange={(event) => setSearch(event.target.value)} /><select aria-label="Filter by franchise" value={franchiseFilter} onChange={(event) => setFranchiseFilter(event.target.value)}><option value="all">All franchises</option>{FRANCHISES.map((team) => <option value={team.id} key={team.id}>{team.name}</option>)}</select></div>
-                  {room.currentSpinFranchiseId && <div className="filter-reminder">Wheel result: <strong>{room.currentSpinFranchiseId}</strong> · Only players from this franchise can be selected.</div>}
+                  <div className="panel-heading"><div><p className="eyebrow">ELIGIBLE PLAYER POOL{room.currentSpinFranchiseId && !room.spinInProgress ? ` · ${room.currentSpinFranchiseId}` : ""}</p><h2>Find your next pick</h2></div><span className="pool-count">{room.spinInProgress ? "Spinning" : room.currentSpinFranchiseId ? `${availableForSpin.length} available` : "Spin to begin"}</span></div>
+                  <div className="pool-filters"><input aria-label="Search eligible players from the selected franchise" placeholder="Search eligible players..." value={search} onChange={(event) => setSearch(event.target.value)} /></div>
                   <div className="pool-list">
                     {displayedPool.map((player) => {
-                      const picked = room.pickedPlayerIds.includes(player.id);
-                      const pickedBy = picked ? room.players.find((owner) => room.squads[owner.id]?.playerIds.includes(player.id)) : undefined;
-                      const eligible = !picked && player.franchiseId === room.currentSpinFranchiseId && Boolean(isMyTurn) && !room.spinInProgress;
-                      return <div className={`pool-row${eligible ? " pool-row--eligible" : ""}${picked ? " pool-row--picked" : ""}`} key={player.id}>
+                      const eligible = Boolean(isMyTurn);
+                      return <div className={`pool-row${eligible ? " pool-row--eligible" : ""}`} key={player.id}>
                         <FranchiseBadge id={player.franchiseId} small /><div className="pool-player-info"><strong>{player.name}</strong><small>{player.role.replace("-", " ")}</small></div>
-                        {picked ? <span className="availability availability--picked">PICKED by {pickedBy?.name ?? "a player"}</span> : <span className="availability">Available</span>}
+                        <span className="availability">Available</span>
                         {eligible && <button className="button button--tiny" onClick={() => setModal({ kind: "pick", playerId: player.id })}>Select</button>}
                       </div>;
                     })}
-                    {displayedPool.length === 0 && <p className="empty-note">No players match that search. Try another name or franchise.</p>}
+                    {room.spinInProgress && <p className="empty-note">The wheel is spinning. Eligible players will appear when it lands.</p>}
+                    {!room.spinInProgress && !room.currentSpinFranchiseId && <p className="empty-note">Spin the wheel to see available players from the selected franchise.</p>}
+                    {!room.spinInProgress && room.currentSpinFranchiseId && displayedPool.length === 0 && <p className="empty-note">{availableForSpin.length === 0 ? "No eligible players are left from this franchise." : "No players match that search."}</p>}
                   </div>
                 </div>
               </section>
